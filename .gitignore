@@ -1,0 +1,37 @@
+# Python bytecode and cache
+__pycache__/
+*.pyc
+
+# Virtual environment and secrets
+venv/
+*.env
+.env
+
+# Build artifacts & packaging
+build/
+dist/
+*.egg-info/
+
+# IDE and OS specific files
+.idea/
+.vscode/
+.DS_Store
+.ipynb_checkpoints/
+
+# Large binary files (as per your README)
+*.onnx
+*.pb
+*.pb.gz
+*.pkl
+*.pgn
+*.zarr
+*.npy
+*.npz
+*.pt
+*.sif
+*.tar.bz2
+lichess_db_puzzle.csv
+
+# HPC / Local logs & stats
+cluster/logs/
+cluster/stats/

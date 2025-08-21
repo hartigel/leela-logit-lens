@@ -39,7 +39,6 @@ Place the model files in your root working directory. For our experiments, we pr
   wget http://storage.lczero.org/files/ccrl-pgn.tar.bz2 -P data/
   cd data/
   tar -xjf ccrl-pgn.tar.bz2
-  mv ccrl-pgn ccrl
   cd ..
   ```
   
@@ -49,6 +48,7 @@ After completing the setup, your project directory should look like this:
     ├── data/
     │   ├── puzzles.csv
     │   ├── eco_openings.pgn
+    │   ├── interesting_puzzles_history.pkl (history annotated puzzles for plotting)
     │   └── ccrl/
     │       └── ... (extracted files)
     ├── notebooks/
@@ -102,7 +102,11 @@ This experiment evaluates the model's ability to solve tactical puzzles.
 
 This experiment runs a round-robin tournament to determine the Elo strength of the model and its logit lens layers.
 
-1. **Build Stockfish**: Follow the instructions in the "Amortized Planning" paper to build the Stockfish engine in the source directory.
+1. **Build Stockfish**: Follow the instructions in the "Amortized Planning" paper to build the Stockfish engine in the source directory or run this:
+
+   ```bash
+   bash_scripts/install_stockfish.sh
+   ```
 
 2. **Install BayesElo**: For the calculation of the Elo scores you need BayesElo which you can install as specified in the "Amortized Planning" paper or you run this bash script:
    
