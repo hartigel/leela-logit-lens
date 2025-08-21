@@ -29,7 +29,7 @@ Place the model files in your root working directory. For our experiments, we pr
   wget https://storage.googleapis.com/searchless_chess/data/eco_openings.pgn -P data/
   ```
 
-- **Augmented Puzzles**: We use an augmented version of the `interesting_puzzles.csv` file from the "Evidence of Learned Look-Ahead" paper for some plots including the history. Both `.csv` and `.pkl` versions are available in our all-in-one Figshare above.
+- **Augmented Puzzles**: We use an augmented version of the `interesting_puzzles.pkl` file from the "Evidence of Learned Look-Ahead" paper for some plots including the history. Both `.csv` and `.pkl` versions are available in our all-in-one Figshare above.
   
   > **Note**: If you wish to regenerate this file yourself, download the original `interesting_puzzles.csv` and run the `scripts/puzzle_history_augmentation.py` script.
 
