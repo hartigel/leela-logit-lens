@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "leela-logit-lens"
+version = "0.0.1"
+description = "Package accompanying the paper Iterative Inference in a Chess-Playing Neural Network."
+readme = "README.md"
+authors = [
+]
+requires-python = ">=3.10"
+
+# If your package needs external libraries, list them here:
+dependencies = [
+  "requests",
+  "numpy",
+  "zarr==2.*",
+  "skia-python==87.7",
+  "torch>=2.0.0",
+  "tqdm",
+  "leela-interp @ git+https://github.com/HumanCompatibleAI/leela-interp.git"
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
