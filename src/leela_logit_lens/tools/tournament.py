@@ -14,6 +14,7 @@
 # ==============================================================================
 """
 Launches a tournament between LogitLensEngine instances (one per layer) to compute their Elos.
+This file has been adapted from the searchless chess paper implementation.
 """
 
 from collections.abc import Mapping, Sequence
@@ -28,7 +29,6 @@ import chess.pgn
 from searchless_chess.engines import engine
 from searchless_chess.engines.stockfish_engine import StockfishEngine
 
-# Import LeelaBoard from your interpreter.
 from leela_interp import LeelaBoard
 
 

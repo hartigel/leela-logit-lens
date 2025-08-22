@@ -14,6 +14,7 @@
 # ==============================================================================
 """
 Launches a tournament between LogitLensEngine instances (one per layer) to compute their Elos.
+This file has been adapted from the searchless chess paper implementation.
 """
 
 import argparse

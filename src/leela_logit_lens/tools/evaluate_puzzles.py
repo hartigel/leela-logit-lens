@@ -106,6 +106,7 @@ def evaluate_principal_variations_batch(
 
     return results
 
+
 def get_predicted_moves_batch(
         boards: List[LeelaBoard],
         lens: LeelaLogitLens,

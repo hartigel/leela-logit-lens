@@ -5,8 +5,7 @@ Needed for investigation of the leela interp puzzle dataset with the original mo
 since it doesn't include a history of moves which is expected by the model.
 
 Driver script to augment a Lichess puzzle DataFrame with PGN data.
-Loads an input pickle file, calls the augmenter to add 'PGN' columns (or any puzzle
-columns you define), and saves the augmented DataFrame to a CSV file.
+Loads an input pickle file, calls the augmenter to add 'PGN' columns and saves the augmented DataFrame to a CSV file.
 """
 
 import argparse

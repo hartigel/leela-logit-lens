@@ -2,19 +2,16 @@
 sample_positions.py
 
 This module provides functions to sample chess positions from a directory of PGN files.
-
-Use these functions to build your dataset for activation studies or analysis.
 """
 
 # === Imports ===
-import os
 import random
 import chess
 import chess.pgn
 from io import StringIO
 from typing import List, Optional, Set
 
-from leela_interp import LeelaBoard  # Adjust the import as needed
+from leela_interp import LeelaBoard
 
 from .utils import list_pgn_files
 

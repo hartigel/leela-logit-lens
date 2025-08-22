@@ -12,7 +12,6 @@ Next, download the required data and model files.
 
 > **📦 All-in-One Download**: For convenience, we've compiled all necessary files into a single Figshare repository: https://figshare.com/s/5342980a9ba8b26985a9. This includes models, datasets, and pre-computed results so you can skip directly to analysis if desired.
 
-
 ### Models
 
 Download the Leela Chess Zero models from the "Evidence of Learned Look-Ahead" paper here: https://figshare.com/s/adc80845c00b67c8fce5 (also available in our all-in-one Figshare above).
@@ -29,9 +28,11 @@ Place the model files in your root working directory. For our experiments, we pr
   wget https://storage.googleapis.com/searchless_chess/data/eco_openings.pgn -P data/
   ```
 
-- **Augmented Puzzles**: We use an augmented version of the `interesting_puzzles.pkl` file from the "Evidence of Learned Look-Ahead" paper for some plots including the history. Both `.csv` and `.pkl` versions are available in our all-in-one Figshare above.
+- **Augmented Puzzles**: We use an augmented version of the `interesting_puzzles.pkl` file from the "Evidence of Learned Look-Ahead" paper for some plots including the history of the games taken from Lichess. Both `.csv` and `.pkl` versions are available in our all-in-one Figshare above.
   
-  > **Note**: If you wish to regenerate this file yourself, download the original `interesting_puzzles.csv` and run the `scripts/puzzle_history_augmentation.py` script.
+  > **Note**: You only need the `interesting_puzzles.csv` if you want to execute the puzzle solving analysis for the dataset used in the "Evidence of Learned Look-Ahead" paper. Since they filter the puzzles by different criteria, we used the `puzzles.csv` from the "Amortized Planning" paper for our analysis who didn't filter.
+  
+  > **Note**: If you wish to regenerate this file yourself, download the original `interesting_puzzles.pkl` and run the `scripts/puzzle_history_augmentation.py` script.
 
 - **CCRL Dataset**: Used for the policy distribution metrics. Download and decompress it into the `data/` directory.
   
@@ -41,7 +42,7 @@ Place the model files in your root working directory. For our experiments, we pr
   tar -xjf ccrl-pgn.tar.bz2
   cd ..
   ```
-  
+
 After completing the setup, your project directory should look like this:
 
     .
@@ -52,7 +53,7 @@ After completing the setup, your project directory should look like this:
     │   └── ccrl/
     │       └── ... (extracted files)
     ├── notebooks/
-    │   ├── ...
+    │   └── ...
     ├── results/
     │   ├── puzzle_results.csv
     │   └── tournament_games.pgn
@@ -62,21 +63,25 @@ After completing the setup, your project directory should look like this:
     ├── lc0.onnx (if you want to use the finetuned model)
     ├── Stockfish/
     │   └── ...
-    ├── lc0/ (if you want to use the policy anchor)
+    ├── lc0/ (if you want to use the policy anchor in the tournament)
     │   └── ...
-    └── 768x15x24h-t82-swa-7464000.pb (if you want to use the policy anchor)
+    └── 768x15x24h-t82-swa-7464000.pb (if you want to use the policy anchor in the tournament)
 
 ---
 
 ## Quickstart Demo 🚀
 
-To get a feel for the core functionalities of this codebase, we recommend starting with the demo notebook located at `notebooks/demo.ipynb`. It provides an intuitive walkthrough of how to apply these analysis techniques to new puzzles or positions.
+To get a feel for the core functionalities of this codebase, we recommend starting with the demo notebook located at `notebooks/demo.ipynb`. It provides an intuitive walkthrough of how to apply the logit lens to new puzzles or positions.
 
 ---
 
 ## Reproducing Results
 
 This section details the steps to reproduce the main results from our paper.
+
+### Main Figure
+
+The code for plotting the main figure is available in `notebooks/figure1.ipynb`.
 
 ### Puzzle Solving Results
 
@@ -98,6 +103,8 @@ This experiment evaluates the model's ability to solve tactical puzzles.
 
 > **Shortcut**: You can download our pre-computed `puzzle_results.csv` from our all-in-one Figshare repository above and place it in a `results/` directory to skip directly to the analysis notebook.
 
+> **Note**: The plots for the puzzle results are generated in `notebooks/puzzle_results.ipynb`.
+
 ### Tournament Elo Results
 
 This experiment runs a round-robin tournament to determine the Elo strength of the model and its logit lens layers.
@@ -114,7 +121,7 @@ This experiment runs a round-robin tournament to determine the Elo strength of t
    bash_scripts/install_bayeselo.sh
    ```
 
-3. **(Optional) Policy Anchor**: If you want to use the Leela policy anchor, install `lc0` on your system.
+3. **(Optional) Policy Anchor**: If you want to use the Leela policy anchor, install `lc0` on your system. Note that using the policy net anchor currently only works with CUDA.
 
 4. **(Optional) Download Anchor Model**: Download the protobuf model files used in the reference paper (this is only needed for the policy anchor model):
    
@@ -146,3 +153,15 @@ This analysis evaluates policy metrics on a large dataset of human games.
 1. Ensure the CCRL dataset has been downloaded and extracted into the `data/` directory.
 
 2. The entire analysis is performed within the `notebooks/policy_metrics.ipynb` notebook. Simply run the cells in order.
+
+> **Note**: The plots for the policy metrics are generated in `notebooks/policy_metrics.ipynb`.
+
+### Additional Examples
+
+For the plots of the additional examples, see `notebooks/demo.ipynb` which also contains the plotting function for all layers of a given position and the generation of probability tables.
+
+---
+
+## Acknowledgments
+
+This work was heavily inspired by and builds upon the research and public codebase from the paper **"Evidence of Learned Look-Ahead in a Chess-Playing Neural Network"** by Erik Jenner, Shreyas Kapur, Vasil Georgiev, Cameron Allen, Scott Emmons and Stuart Russell. We are very grateful for their foundational work and for making their models and tools publicly available.

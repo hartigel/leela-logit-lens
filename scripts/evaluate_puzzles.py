@@ -2,7 +2,7 @@
 """
 evaluate_puzzles.py
 
-Driver script to evaluate Lichess puzzles using the AlteredLeelaLogitLens with batching support.
+Driver script to evaluate Lichess puzzles using the LeelaLogitLens with batching support.
 It reads an input CSV file, augments it with 'principal_variation',
 'full_pv_probs', and 'solved_by_layer' columns (which record, per layer, whether
 the predicted moves solve the puzzle), and saves the augmented DataFrame to a CSV file.
@@ -55,7 +55,6 @@ def main(args):
     print(f"Evaluating puzzles for layers {layer_indices} with batch size: {args.batch_size}")
 
     # Augment the DataFrame with puzzle evaluation data using batched processing.
-    # In your main() function, pass the flags:
     df_augmented = evaluate_puzzle_dataframe(
         df,
         lens,
