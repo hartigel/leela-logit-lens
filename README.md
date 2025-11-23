@@ -162,6 +162,25 @@ For the plots of the additional examples, see `notebooks/demo.ipynb` which also 
 
 ---
 
+## Citation
+
+If you find this codebase helpful for your research, please cite our paper:
+```bibtex
+@misc{sandmann2025iterative,
+      title={Iterative Inference in a Chess-Playing Neural Network}, 
+      author={Elias Sandmann and Sebastian Lapuschkin and Wojciech Samek},
+      year={2025},
+      eprint={2508.21380},
+      archivePrefix={arXiv},
+      primaryClass={cs.LG}
+}
+```
+
+**Paper:** [arXiv:2508.21380](https://arxiv.org/abs/2508.21380)  
+**Workshop:** Presented at NeurIPS 2025 Workshop on Mechanistic Interpretability
+
+---
+
 ## Acknowledgments
 
 This work was heavily inspired by and builds upon the research and public codebase from the paper **"Evidence of Learned Look-Ahead in a Chess-Playing Neural Network"** by Erik Jenner, Shreyas Kapur, Vasil Georgiev, Cameron Allen, Scott Emmons and Stuart Russell. We are very grateful for their foundational work and for making their models and tools publicly available.
