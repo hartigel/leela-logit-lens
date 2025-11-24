@@ -166,13 +166,14 @@ For the plots of the additional examples, see `notebooks/demo.ipynb` which also 
 
 If you find this codebase helpful for your research, please cite our paper:
 ```bibtex
-@misc{sandmann2025iterative,
+@misc{sandmann2025iterativeinferencechessplayingneural,
       title={Iterative Inference in a Chess-Playing Neural Network}, 
       author={Elias Sandmann and Sebastian Lapuschkin and Wojciech Samek},
       year={2025},
       eprint={2508.21380},
       archivePrefix={arXiv},
-      primaryClass={cs.LG}
+      primaryClass={cs.LG},
+      url={https://arxiv.org/abs/2508.21380}, 
 }
 ```
 
