@@ -10,6 +10,6 @@ python scripts/tournament.py \
     --stockfish_binary "Stockfish/src/stockfish" \
     --temperature 1.0 \
     --games_per_opening 5
-     --use_policy_net_anchor \
-    --lc0_binary "lc0/build/release/lc0"\
-    --lc0_weights "768x15x24h-t82-swa-7464000.pb"
+    # --use_policy_net_anchor \
+    # --lc0_binary "lc0/build/release/lc0"\
+    # --lc0_weights "768x15x24h-t82-swa-7464000.pb"
