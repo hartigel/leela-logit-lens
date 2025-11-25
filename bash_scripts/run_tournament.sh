@@ -5,7 +5,7 @@ python scripts/tournament.py \
     --num_openings 10 \
     --model_path "lc0-original.onnx" \
     --in_path "data/eco_openings.pgn" \
-    --out_path "results/tournament_games.pgn" \
+    --out_path "results/tournament_games_temp_1_openings_10_games_5.pgn" \
     --seed 42 \
     --stockfish_binary "Stockfish/src/stockfish" \
     --temperature 1.0 \
