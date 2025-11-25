@@ -57,11 +57,23 @@ def main(args):
     # Set the seed and ensure determinism
     ensure_determinism(seed=args.seed)
 
-    # Sample from the loaded openings to get the number of games desired (divided by 2 since we play both sides).
+    # Determine effective games_per_opening based on temperature
+    effective_games_per_opening = 1 if args.temperature == 0.0 else args.games_per_opening
+
+    if args.temperature == 0.0 and args.games_per_opening > 1:
+        print(f"Note: temperature=0.0 is deterministic, ignoring games_per_opening={args.games_per_opening}")
+
+    # Calculate total games
+    total_games = args.num_openings * 2 * effective_games_per_opening
+
+    print(
+        f"Total games to play: {total_games} ({args.num_openings} openings × 2 colors × {effective_games_per_opening} samples)")
+
+    # Sample from the loaded openings to get the number of games desired.
     rng = np.random.default_rng(seed=args.seed)
     opening_indices = rng.choice(
         np.arange(len(opening_boards)),
-        size=args.num_games // 2,  # each opening is played from both sides
+        size=args.num_openings,
         replace=False,
     )
     opening_boards = [opening_boards[idx] for idx in opening_indices]
@@ -94,15 +106,18 @@ def main(args):
             engine_key = 'leela_logit_lens_full_model'
         else:
             engine_key = f"leela_logit_lens_layer_{layer-1}"
-        engines[engine_key] = constants.ENGINE_BUILDERS[engine_key]()
+        engines[engine_key] = constants.ENGINE_BUILDERS[engine_key](temperature=args.temperature)
         print(f"Initialized engine {engine_key}")
 
     # Run the tournament and collect games.
-    games = run_tournament(engines=engines,
-                           opening_boards=opening_boards,
-                           eval_stockfish_engine=eval_stockfish_engine,
-                           min_score_to_stop=args.min_score_to_stop
-                           )
+    games = run_tournament(
+        engines=engines,
+        opening_boards=opening_boards,
+        eval_stockfish_engine=eval_stockfish_engine,
+        min_score_to_stop=args.min_score_to_stop,
+        games_per_opening=effective_games_per_opening,
+        seed=args.seed
+    )
 
     # Write games to the specified output path.
     games_path = args.out_path
@@ -130,10 +145,22 @@ if __name__ == "__main__":
         description="Launches a tournament between LogitLensEngine instances (one per layer) to compute their Elos."
     )
     parser.add_argument(
-        "--num_games",
+        "--num_openings",
         type=int,
         required=True,
-        help="The number of games to play between each pair of engines."
+        help="The number of openings to play between each pair of engines."
+    )
+    parser.add_argument(
+        '--temperature',
+        type=float,
+        default=1.0,
+        help='Sampling temperature for LeelaLogitLens engines (0=argmax, 1.0=raw distribution)'
+    )
+    parser.add_argument(
+        '--games_per_opening',
+        type=int,
+        default=1,
+        help='Number of times to play each opening position (only used when temperature is not 0)'
     )
     parser.add_argument(
         "--in_path",

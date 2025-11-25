@@ -21,6 +21,8 @@ from collections.abc import Mapping, Sequence
 import copy
 import datetime
 import itertools
+import torch
+import numpy as np
 
 import chess
 import chess.engine
@@ -117,57 +119,68 @@ def run_tournament(
         engines: Mapping[str, engine.Engine],
         opening_boards: Sequence[LeelaBoard],
         eval_stockfish_engine: StockfishEngine,
-        min_score_to_stop: int
+        min_score_to_stop: int,
+        games_per_opening: int = 1,
+        seed: int = 42,
 ) -> Sequence[chess.pgn.Game]:
     """Runs a tournament between engines given opening positions.
 
-    We play both sides for each opening, so the total number of games played per
-    pair is 2 * len(opening_boards).
+    We play both sides for each opening, repeated for games_per_opening samples,
+    so the total number of games played per pair is 2 * len(opening_boards) * games_per_opening.
 
     Args:
       engines: A mapping from engine names to engine instances.
       opening_boards: A sequence of LeelaBoard instances to use as openings.
       eval_stockfish_engine: A stockfish engine for checking early termination of games.
       min_score_to_stop: The minimum score to reach as determined by stockfish to terminate the game early.
+      games_per_opening: Number of times to play each opening position.
+      seed: Random seed for generating per-game seeds.
 
     Returns:
       A sequence of chess.pgn.Game objects.
     """
     games = []
 
+    seed_rng = np.random.default_rng(seed)
+
     for engine_name_0, engine_name_1 in itertools.combinations(engines, 2):
         print(f"Playing games between {engine_name_0} and {engine_name_1}")
         engine_0 = engines[engine_name_0]
         engine_1 = engines[engine_name_1]
 
-        # Initialize counters for wins and draws.
         results = {engine_name_0: 0, engine_name_1: 0, "draws": 0}
         pair_games = []
 
-        for opening_board, white_idx in itertools.product(opening_boards, (0, 1)):
-            white_name = (engine_name_0, engine_name_1)[white_idx]
-            game = _play_game(
-                engines=(engine_0, engine_1),
-                engines_names=(engine_name_0, engine_name_1),
-                white_name=white_name,
-                # Use a deepcopy as the opening board is modified during play.
-                initial_board=copy.deepcopy(opening_board),
-                eval_stockfish_engine=eval_stockfish_engine,
-                min_score_to_stop=min_score_to_stop
-            )
-            pair_games.append(game)
+        for opening_idx, opening_board in enumerate(opening_boards):
+            for sample_num in range(games_per_opening):
+                for white_idx in (0, 1):
+                    white_name = (engine_name_0, engine_name_1)[white_idx]
 
-            # Get the result (assume "1-0", "0-1", or "1/2-1/2" for a draw)
-            result_str = game.headers.get("Result", "1/2-1/2")
-            if result_str == "1-0":
-                results[game.headers["White"]] += 1
-            elif result_str == "0-1":
-                results[game.headers["Black"]] += 1
-            else:
-                results["draws"] += 1
+                    game_seed = seed_rng.integers(0, 2 ** 31)
+
+                    torch.manual_seed(game_seed)
+                    if torch.cuda.is_available():
+                        torch.cuda.manual_seed_all(game_seed)
+
+                    game = _play_game(
+                        engines=(engine_0, engine_1),
+                        engines_names=(engine_name_0, engine_name_1),
+                        white_name=white_name,
+                        initial_board=copy.deepcopy(opening_board),
+                        eval_stockfish_engine=eval_stockfish_engine,
+                        min_score_to_stop=min_score_to_stop
+                    )
+                    pair_games.append(game)
+
+                    result_str = game.headers.get("Result", "1/2-1/2")
+                    if result_str == "1-0":
+                        results[game.headers["White"]] += 1
+                    elif result_str == "0-1":
+                        results[game.headers["Black"]] += 1
+                    else:
+                        results["draws"] += 1
 
         total_games = len(pair_games)
-        # Print summary
         print(
             f"Results between {engine_name_0} and {engine_name_1}: "
             f"{engine_name_0} wins {results[engine_name_0]}, "

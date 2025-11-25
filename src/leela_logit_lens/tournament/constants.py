@@ -41,10 +41,19 @@ from leela_logit_lens.tools.utils import set_device
 def _build_leela_logit_lens_engine(
         model_path: str,
         layer_idx: int = 15,
+        temperature: float = 1.0,
 ) -> "LogitLensEngine":
     """
     Builds a LogitLensEngine based on the given model path to the onnx model, and sets the device
     according to the available hardware (CUDA, MPS, or CPU).
+
+    Args:
+        model_path: Path to the ONNX model file.
+        layer_idx: The layer index at which to apply the logit lens.
+        temperature: Sampling temperature. 0 = argmax, 1.0 = sample from raw distribution.
+
+    Returns:
+        LogitLensEngine instance configured with the specified parameters.
     """
 
     # Determine the device (cuda, mps, or cpu)
@@ -54,7 +63,7 @@ def _build_leela_logit_lens_engine(
     model = Lc0sight(path=model_path, device=device)
 
     lens = LeelaLogitLens(model=model)
-    return LogitLensEngine(lens=lens, layer_idx=layer_idx)
+    return LogitLensEngine(model=model, lens=lens, layer_idx=layer_idx, temperature=temperature)
 
 
 def create_policy_net_builder():
@@ -71,10 +80,11 @@ def create_logit_lens_builders(model_path: str):
     return {
         ('leela_logit_lens_input' if layer == 0 else
          'leela_logit_lens_full_model' if layer == 15 else
-         f'leela_logit_lens_layer_{layer-1}'):
-            (lambda layer=layer: _build_leela_logit_lens_engine(
+         f'leela_logit_lens_layer_{layer - 1}'):
+            (lambda temperature=1.0, layer=layer: _build_leela_logit_lens_engine(
                 model_path=model_path,
-                layer_idx=layer
+                layer_idx=layer,
+                temperature=temperature
             ))
         for layer in range(16)
     }
