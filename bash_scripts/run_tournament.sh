@@ -1,5 +1,7 @@
 #!/bin/bash
 
+export CUBLAS_WORKSPACE_CONFIG=:4096:8
+
 # Simple tournament runner script
 python scripts/tournament.py \
     --num_openings 10 \
