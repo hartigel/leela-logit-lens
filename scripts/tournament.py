@@ -19,6 +19,7 @@ This file has been adapted from the searchless chess paper implementation.
 
 import argparse
 import sys
+import os
 
 import chess
 import chess.engine
@@ -122,6 +123,10 @@ def main(args):
     # Write games to the specified output path.
     games_path = args.out_path
     print(f"Writing games to {games_path}")
+
+    # Ensure output directory exists
+    os.makedirs(os.path.dirname(games_path), exist_ok=True)
+
     with open(games_path, "w") as file:
         for i, game in enumerate(games):
             s = str(game)
