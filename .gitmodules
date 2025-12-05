@@ -1,0 +1,3 @@
+[submodule "stockfish-8-linux"]
+	path = stockfish-8-linux
+	url = git@github.com:hartigel/stockfish-8-linux.git
