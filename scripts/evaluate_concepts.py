@@ -22,7 +22,7 @@ from leela_logit_lens.tools.utils import set_device, ensure_determinism
 from leela_interp import Lc0sight
 from leela_logit_lens import LeelaLogitLens
 
-from leela_logit_lens.tools.concept_evaluation import StockfishEvaluator, evaluate_positions_by_layer
+from leela_logit_lens.tools.evaluate_concepts import StockfishEvaluator, evaluate_positions_by_layer
 
 
 def main(args):
