@@ -1,5 +1,7 @@
 #!/bin/bash
 
+export CUBLAS_WORKSPACE_CONFIG=:4096:8
+
 mkdir -p results
 
 python scripts/evaluate_concepts.py \
