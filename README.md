@@ -183,7 +183,7 @@ This experiment evaluates how different layers prioritize chess concepts like ki
 
 ### Policy Distribution Metrics
 
-This analysis evaluates policy metrics on a large dataset of human games.
+This analysis evaluates policy metrics like entropy and JS-divergence.
 
 1. Ensure the CCRL dataset has been downloaded and extracted into the `data/` directory.
 
