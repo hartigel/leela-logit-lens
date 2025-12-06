@@ -42,7 +42,7 @@ Place the model files in your root working directory. For our experiments, we pr
 
 ### Stockfish (Modified)
 
-For the concept evaluation experiments, we use a modified version of Stockfish 8 that outputs detailed evaluation terms. This is included as a git submodule.
+For the concept evaluation experiments, we use a modified version of Stockfish 8 that outputs detailed evaluation terms. This is included as a git submodule. So far it only works on linux.
 
 1. **Initialize the submodule**:
 ```bash
