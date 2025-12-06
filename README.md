@@ -3,7 +3,6 @@
 ## Setup
 
 First, install the necessary Python packages:
-
 ```bash
 pip install -e .
 ```
@@ -21,12 +20,11 @@ Place the model files in your root working directory. For our experiments, we pr
 ### Datasets
 
 - **Evaluation Puzzles & Openings**: These are from the "Amortized Planning with Large-Scale Transformers" paper (also available in our all-in-one Figshare above). Download them into a `data/` subdirectory.
-  
-  ```bash
+```bash
   mkdir -p data
   wget https://storage.googleapis.com/searchless_chess/data/puzzles.csv -P data/
   wget https://storage.googleapis.com/searchless_chess/data/eco_openings.pgn -P data/
-  ```
+```
 
 - **Augmented Puzzles**: We use an augmented version of the `interesting_puzzles.pkl` file from the "Evidence of Learned Look-Ahead" paper for some plots including the history of the games taken from Lichess. Both `.csv` and `.pkl` versions are available in our all-in-one Figshare above.
   
@@ -34,14 +32,33 @@ Place the model files in your root working directory. For our experiments, we pr
   
   > **Note**: If you wish to regenerate this file yourself, download the original `interesting_puzzles.pkl` and run the `scripts/puzzle_history_augmentation.py` script.
 
-- **CCRL Dataset**: Used for the policy distribution metrics. Download and decompress it into the `data/` directory.
-  
-  ```bash
+- **CCRL Dataset**: Used for the policy distribution metrics and concept evaluation. Download and decompress it into the `data/` directory.
+```bash
   wget http://storage.lczero.org/files/ccrl-pgn.tar.bz2 -P data/
   cd data/
   tar -xjf ccrl-pgn.tar.bz2
   cd ..
-  ```
+```
+
+### Stockfish (Modified)
+
+For the concept evaluation experiments, we use a modified version of Stockfish 8 that outputs detailed evaluation terms. This is included as a git submodule.
+
+1. **Initialize the submodule**:
+```bash
+   git submodule update --init --recursive
+```
+
+2. **Build Stockfish**:
+```bash
+   cd stockfish-8-linux/src
+   make build ARCH=x86-64-bmi2
+   cd ../..
+```
+   
+   > **Note**: The `ARCH` flag depends on your CPU. Run `make help` to see available options. Common choices are `x86-64`, `x86-64-modern`, or `x86-64-bmi2`.
+
+3. The binary will be located at `stockfish-8-linux/src/stockfish`.
 
 After completing the setup, your project directory should look like this:
 
@@ -56,9 +73,13 @@ After completing the setup, your project directory should look like this:
     │   └── ...
     ├── results/
     │   ├── puzzle_results.csv
+    │   ├── concept_deltas.pkl
     │   └── tournament_games.pgn
     ├── scripts/
-    │   └── ..
+    │   └── ...
+    ├── stockfish-8-linux/
+    │   └── src/
+    │       └── stockfish (built binary)
     ├── lc0-original.onnx
     ├── lc0.onnx (if you want to use the finetuned model)
     ├── Stockfish/
@@ -90,10 +111,9 @@ This experiment evaluates the model's ability to solve tactical puzzles.
 1. Ensure `data/puzzles.csv` is downloaded and the `lc0-original.onnx` model is in the root directory.
 
 2. Run the evaluation script. This will generate the raw results and save them.
-   
-   ```bash
+```bash
    python scripts/evaluate_puzzles.py
-   ```
+```
    
    (Alternatively, you can simply invoke the provided `bash_scripts/evaluate_puzzles.sh` script).
 
@@ -110,33 +130,29 @@ This experiment evaluates the model's ability to solve tactical puzzles.
 This experiment runs a round-robin tournament to determine the Elo strength of the model and its logit lens layers.
 
 1. **Build Stockfish**: Follow the instructions in the "Amortized Planning" paper to build the Stockfish engine in the source directory or run this:
-
-   ```bash
+```bash
    bash_scripts/install_stockfish.sh
-   ```
+```
 
 2. **Install BayesElo**: For the calculation of the Elo scores you need BayesElo which you can install as specified in the "Amortized Planning" paper or you run this bash script:
-   
-   ```bash
+```bash
    bash_scripts/install_bayeselo.sh
-   ```
+```
 
 3. **(Optional) Policy Anchor**: If you want to use the Leela policy anchor, install `lc0` on your system. Note that using the policy net anchor currently only works with CUDA.
 
 4. **(Optional) Download Anchor Model**: Download the protobuf model files used in the reference paper (this is only needed for the policy anchor model):
-   
-   ```bash
+```bash
    wget https://storage.lczero.org/files/768x15x24h-t82-swa-7464000.pb.gz
    gunzip 768x15x24h-t82-swa-7464000.pb.gz
-   ```
+```
 
 5. Ensure `eco_openings.pgn` is in the `data/` directory.
 
 6. **Run the Tournament**:
-   
-   ```bash
+```bash
    python scripts/run_tournament.py
-   ```
+```
    
    (Alternatively, you can simply invoke the provided `scripts/run_tournament.sh` script).
 
@@ -145,6 +161,25 @@ This experiment runs a round-robin tournament to determine the Elo strength of t
 8. Use the `notebooks/tournament_results.ipynb` notebook to calculate the final Elo scores from the PGN file.
 
 > **Shortcut**: You can download our pre-computed `tournament_games.pgn` file from our all-in-one Figshare repository above and place it in `results/` to skip directly to the analysis notebook.
+
+### Concept Evaluation Results
+
+This experiment evaluates how different layers prioritize chess concepts like king safety, mobility, and material using Stockfish's evaluation terms.
+
+1. Ensure the CCRL dataset has been downloaded and extracted into the `data/` directory.
+
+2. Ensure the modified Stockfish 8 is built (see [Stockfish (Modified)](#stockfish-modified) in the Setup section).
+
+3. Run the evaluation script:
+```bash
+   bash_scripts/evaluate_concepts.sh
+```
+
+4. The results will be stored in `results/concept_deltas.pkl`.
+
+5. Use the `notebooks/concept_results.ipynb` notebook to analyze and generate plots.
+
+> **Shortcut**: You can download our pre-computed `concept_deltas.pkl` from our all-in-one Figshare repository above and place it in `results/` to skip directly to the analysis notebook.
 
 ### Policy Distribution Metrics
 
